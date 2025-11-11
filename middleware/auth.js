@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 // const JWT_SECRET = process.env.JWT_SECRET || "dev-secret";
-const JWT_SECRET = "aditya-secret-key";
+const JWT_SECRET = "aditya-super-secret";
 
 export const requireAuth = (req, res, next) => {
   try {

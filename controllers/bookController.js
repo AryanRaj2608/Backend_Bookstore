@@ -85,16 +85,27 @@ export const getBookById = async (req, res) => {
 /** UPDATE */
 export const updateBook = async (req, res) => {
   try {
-    const allowed = ["title", "author", "description", "price", "coverImage", "publishedYear", "available"];
-    const updates = {};
-    for (const k of allowed) if (k in req.body) updates[k] = req.body[k];
+    const { id } = req.params;
+    const updatedData = req.body;
 
-    const book = await Book.findByIdAndUpdate(req.params.id, updates, { new: true, runValidators: true });
-    if (!book) return res.status(404).json({ success: false, message: "Book not found." });
+    // Step 1: Validate the ID
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, message: "Invalid book ID" });
+    }
 
-    return res.json({ success: true, data: book });
-  } catch (err) {
-    return res.status(400).json({ success: false, message: "Failed to update book.", error: err.message });
+    // Step 2: Update the book by ID
+    const updatedBook = await Book.findByIdAndUpdate(id, updatedData, { new: true, runValidators: true });
+
+    // Step 3: Handle not found
+    if (!updatedBook) {
+      return res.status(404).json({ success: false, message: "Book not found" });
+    }
+
+    // Step 4: Send success response
+    return res.status(200).json({ success: true, message: "Book updated successfully", data: updatedBook });
+
+  } catch (error) {
+    return res.status(500).json({ success: false, message: "Error updating book", error: error.message });
   }
 };
 

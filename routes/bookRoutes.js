@@ -12,6 +12,7 @@ router.get("/:id", validate(getOrDeleteByIdSchema), getBookById);
 
 router.post("/", requireAuth, validate(createBookSchema), createBook);
 router.put("/:id", requireAuth, validate(updateBookSchema), updateBook);
+// router.put("/:id", validate(updateBookSchema), updateBook);
 router.delete("/:id", requireAuth, validate(getOrDeleteByIdSchema), deleteBook);
 
 export default router;
