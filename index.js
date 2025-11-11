@@ -8,8 +8,28 @@ import authRoutes from "./routes/authRoutes.js";
 import { requireAuth } from "./middleware/auth.js";
 import { Router } from "express";
 import { createBook, getBooks, getBookById, updateBook, deleteBook } from "./controllers/bookController.js";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
+import mongoSanitize from "express-mongo-sanitize";
+import morgan from "morgan";
 
 const app = express();
+
+// security + utils
+app.use(helmet());
+app.use(mongoSanitize());
+app.use(morgan("dev"));
+
+// global rate limit (adjust as needed)
+app.use(
+  rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 300,                  // 300 requests per IP per window
+    standardHeaders: true,
+    legacyHeaders: false,
+  })
+);
+
 app.use(express.json());
 app.use(cors());
 
