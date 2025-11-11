@@ -1,3 +1,5 @@
+import { isValidObjectId } from "mongoose";
+import mongoose from "mongoose"; 
 import Book from "../models/Book.js";
 
 /** CREATE (already added on Day 2) */
@@ -53,11 +55,30 @@ export const getBooks = async (req, res) => {
 /** READ - single by id */
 export const getBookById = async (req, res) => {
   try {
-    const book = await Book.findById(req.params.id);
-    if (!book) return res.status(404).json({ success: false, message: "Book not found." });
-    return res.json({ success: true, data: book });
-  } catch (err) {
-    return res.status(400).json({ success: false, message: "Invalid book id.", error: err.message });
+    const { id } = req.params;
+
+    // ✅ Check if ID is valid MongoDB ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, message: "Invalid book ID" });
+    }
+
+    // ✅ Fetch book by ID
+    const book = await Book.findById(id);
+
+    // ✅ If not found
+    if (!book) {
+      return res.status(404).json({ success: false, message: "Book not found" });
+    }
+
+    // ✅ Return success
+    return res.status(200).json({ success: true, data: book });
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Error fetching book",
+      error: error.message,
+    });
   }
 };
 
