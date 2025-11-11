@@ -36,10 +36,14 @@ export const getBooks = async (req, res) => {
       Book.countDocuments(filter),
     ]);
 
-    return res.json({
+    return res.status(200).json({
       success: true,
-      meta: { total, page, limit, pages: Math.ceil(total / limit), sortBy, sortOrder: sortOrder === 1 ? "asc" : "desc", q },
-      data: items,
+      books: items,
+      pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(total / limit),
+        totalBooks: total
+      }
     });
   } catch (err) {
     return res.status(500).json({ success: false, message: "Failed to fetch books.", error: err.message });

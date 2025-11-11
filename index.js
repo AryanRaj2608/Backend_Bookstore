@@ -17,7 +17,13 @@ const app = express();
 
 // security + utils
 app.use(helmet());
-app.use(mongoSanitize());
+// app.use(mongoSanitize());
+app.use((req, res, next) => {
+  if (req.body)  mongoSanitize.sanitize(req.body);
+  if (req.params) mongoSanitize.sanitize(req.params);
+  // IMPORTANT: don't assign to req.query
+  next();
+});
 app.use(morgan("dev"));
 
 // global rate limit (adjust as needed)
