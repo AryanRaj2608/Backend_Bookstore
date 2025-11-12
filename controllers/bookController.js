@@ -141,34 +141,36 @@ export const updateBook = async (req, res) => {
 };
 
 /** DELETE */
+
 export const deleteBook = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Step 1: Validate the MongoDB Object ID
+    // validate id format
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ success: false, message: "Invalid book ID" });
     }
 
-    // Step 2: Try to find and delete the book
+    // delete
     const deletedBook = await Book.findByIdAndDelete(id);
 
-    // Step 3: Handle book not found
+    // not found
     if (!deletedBook) {
       return res.status(404).json({ success: false, message: "Book not found" });
     }
 
-    // Step 4: Success response
+    // success (include deleted doc if you want)
     return res.status(200).json({
       success: true,
       message: "Book deleted successfully",
-      deletedBook,
+      data: deletedBook
     });
   } catch (error) {
     return res.status(500).json({
       success: false,
       message: "Error deleting book",
-      error: error.message,
+      error: error.message
     });
   }
 };
+
