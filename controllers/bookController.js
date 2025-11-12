@@ -112,10 +112,32 @@ export const updateBook = async (req, res) => {
 /** DELETE */
 export const deleteBook = async (req, res) => {
   try {
-    const deleted = await Book.findByIdAndDelete(req.params.id);
-    if (!deleted) return res.status(404).json({ success: false, message: "Book not found." });
-    return res.json({ success: true, message: "Book deleted." });
-  } catch (err) {
-    return res.status(400).json({ success: false, message: "Failed to delete book.", error: err.message });
+    const { id } = req.params;
+
+    // Step 1: Validate the MongoDB Object ID
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, message: "Invalid book ID" });
+    }
+
+    // Step 2: Try to find and delete the book
+    const deletedBook = await Book.findByIdAndDelete(id);
+
+    // Step 3: Handle book not found
+    if (!deletedBook) {
+      return res.status(404).json({ success: false, message: "Book not found" });
+    }
+
+    // Step 4: Success response
+    return res.status(200).json({
+      success: true,
+      message: "Book deleted successfully",
+      deletedBook,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Error deleting book",
+      error: error.message,
+    });
   }
 };
