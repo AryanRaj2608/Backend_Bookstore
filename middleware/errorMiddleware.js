@@ -6,10 +6,15 @@ export const notFound = (req, res, next) => {
 
 // generic error handler (if you ever call next(err))
 export const errorHandler = (err, req, res, next) => {
-  const status = res.statusCode && res.statusCode !== 200 ? res.statusCode : 500;
+  console.error("Error:", err.stack || err);
+
+  const status = err.statusCode || 500;
+
+  // Friendly, consistent JSON response
   res.status(status).json({
     success: false,
-    message: err.message || "Server error",
-    // stack: process.env.NODE_ENV === "production" ? undefined : err.stack, // uncomment to hide in prod
+    message: err.message || "Something went wrong on the server",
+    stack: process.env.NODE_ENV === "production" ? undefined : err.stack,
   });
 };
+
