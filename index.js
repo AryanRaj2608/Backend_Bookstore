@@ -14,6 +14,9 @@ import mongoSanitize from "express-mongo-sanitize";
 import morgan from "morgan";
 import YAML from "yamljs";
 import swaggerUi from "swagger-ui-express";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
 const swaggerDocument = YAML.load("./swagger.yaml");
@@ -55,10 +58,11 @@ books.delete("/:id", requireAuth, deleteBook);
 app.use("/books", bookRoutes);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
+const PORT = process.env.PORT || 5555;
 // IMPORTANT: Replace <your_mongo_uri> with your actual MongoDB connection string.
-mongoose.connect('mongodb+srv://adityaraj240203_db_user:VfykauoGPy51tpni@cluster0.07jh4kj.mongodb.net/bookstore?retryWrites=true&w=majority&appName=Cluster0')
+mongoose.connect(process.env.MONGO_URI)
   .then(() => {
-    app.listen(5555, () => console.log('Server is running on port 5555'));
+    app.listen(PORT, () => console.log('Server is running on port {PORT}'));
   })
   .catch(err => console.log(err));
 
