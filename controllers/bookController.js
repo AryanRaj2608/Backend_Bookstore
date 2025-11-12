@@ -6,13 +6,37 @@ import Book from "../models/Book.js";
 export const createBook = async (req, res) => {
   try {
     const { title, author, description, price, coverImage, publishedYear, available } = req.body;
+
+    // Required fields check
     if (!title || !author || price === undefined) {
-      return res.status(400).json({ success: false, message: "Fields 'title', 'author' and 'price' are required." });
+      return res.status(400).json({
+        success: false,
+        message: "Fields 'title', 'author' and 'price' are required.",
+      });
     }
-    const book = await Book.create({ title, author, description, price, coverImage, publishedYear, available });
-    return res.status(201).json({ success: true, data: book });
+
+    // Create and save to MongoDB
+    const book = await Book.create({
+      title,
+      author,
+      description,
+      price,
+      coverImage,
+      publishedYear,
+      available,
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: "Book created successfully",
+      data: book,
+    });
   } catch (err) {
-    return res.status(500).json({ success: false, message: "Failed to create book.", error: err.message });
+    return res.status(500).json({
+      success: false,
+      message: "Failed to create book",
+      error: err.message,
+    });
   }
 };
 
