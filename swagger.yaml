@@ -1,0 +1,126 @@
+openapi: 3.0.1
+info:
+  title: Book Management API
+  version: "1.0.0"
+servers:
+  - url: http://localhost:5555
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Book:
+      type: object
+      properties:
+        _id:
+          type: string
+        title:
+          type: string
+        author:
+          type: string
+        publicationYear:
+          type: integer
+        genre:
+          type: string
+      required:
+        - title
+        - author
+        - publicationYear
+        - genre
+
+paths:
+  /books:
+    get:
+      summary: Get all books
+      parameters:
+        - name: q
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of books
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  books:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Book'
+
+    post:
+      summary: Create a book
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+      responses:
+        '201':
+          description: Created
+
+  /books/{id}:
+    get:
+      summary: Get a book by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Book
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+    put:
+      summary: Update a book
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+      responses:
+        '200':
+          description: Updated
+    delete:
+      summary: Delete a book
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Deleted

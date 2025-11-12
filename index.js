@@ -12,9 +12,11 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import mongoSanitize from "express-mongo-sanitize";
 import morgan from "morgan";
+import YAML from "yamljs";
+import swaggerUi from "swagger-ui-express";
 
 const app = express();
-
+const swaggerDocument = YAML.load("./swagger.yaml");
 // security + utils
 app.use(helmet());
 // app.use(mongoSanitize());
@@ -51,7 +53,7 @@ books.post("/", requireAuth, createBook);
 books.put("/:id", requireAuth, updateBook);
 books.delete("/:id", requireAuth, deleteBook);
 app.use("/books", bookRoutes);
-
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // IMPORTANT: Replace <your_mongo_uri> with your actual MongoDB connection string.
 mongoose.connect('mongodb+srv://adityaraj240203_db_user:VfykauoGPy51tpni@cluster0.07jh4kj.mongodb.net/bookstore?retryWrites=true&w=majority&appName=Cluster0')
