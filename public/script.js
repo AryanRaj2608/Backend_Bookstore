@@ -2,7 +2,7 @@ const bookList = document.getElementById('book-list');
 
 // NOTE: use relative path '/books' if you serve frontend from same server.
 // If backend is deployed somewhere else, replace with full URL e.g. 'https://your-backend.onrender.com/books'
-const API_URL = (location.hostname === 'localhost') ? 'http://localhost:5555/bookshttps://backend-bookstore-943q.onrender.com' : '/books';
+const API_URL = (location.hostname === 'localhost') ? 'http://localhost:5555/books' : '/books';
 
 fetch(API_URL)
   .then(res => {
