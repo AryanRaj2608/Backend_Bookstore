@@ -1,0 +1,4 @@
+body { font-family: sans-serif; padding: 20px; background: #f9f9f9; }
+#book-list { margin-top: 20px; }
+.book { background: #fff; margin: 10px 0; padding: 12px; border-left: 4px solid #007BFF; }
+.book strong { display:block; font-size: 16px; margin-bottom:6px; }

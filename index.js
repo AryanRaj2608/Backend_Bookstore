@@ -43,6 +43,7 @@ app.use(
 
 app.use(express.json());
 app.use(cors());
+app.use(express.static('public')); // ← serve your frontend
 
 // A basic test route to verify the server works
 app.get('/', (req, res) => res.send('Welcome to MERN Backend'));
