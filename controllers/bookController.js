@@ -159,7 +159,7 @@ export const deleteBook = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // validate id format
+    // validate id
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ success: false, message: "Invalid book ID" });
     }
@@ -167,22 +167,20 @@ export const deleteBook = async (req, res) => {
     // delete
     const deletedBook = await Book.findByIdAndDelete(id);
 
-    // not found
     if (!deletedBook) {
       return res.status(404).json({ success: false, message: "Book not found" });
     }
 
-    // success (include deleted doc if you want)
     return res.status(200).json({
       success: true,
       message: "Book deleted successfully",
-      data: deletedBook
+      data: deletedBook,
     });
   } catch (error) {
     return res.status(500).json({
       success: false,
       message: "Error deleting book",
-      error: error.message
+      error: error.message,
     });
   }
 };

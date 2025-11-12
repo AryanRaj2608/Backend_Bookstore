@@ -53,9 +53,11 @@ export const updateBookSchema = Joi.object({
 });
 
 export const getOrDeleteByIdSchema = Joi.object({
-  body: Joi.object({}),
-  params: Joi.object({ id: Joi.string().length(24).hex().required() }),
-  query: Joi.object({})
+  params: Joi.object({
+    id: Joi.string().hex().length(24).required(),
+  }).required(),
+  body: Joi.object().optional(),
+  query: Joi.object().optional(),
 });
 
 export const listBooksSchema = Joi.object({
