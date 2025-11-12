@@ -114,27 +114,36 @@ export const getBookById = async (req, res) => {
 export const updateBook = async (req, res) => {
   try {
     const { id } = req.params;
-    const updatedData = req.body;
+    const { title, author, publicationYear, genre, price } = req.body;
 
-    // Validate ID
+    // ✅ 1. Validate ID
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ success: false, message: "Invalid book ID" });
     }
 
-    // Update book
-    const updatedBook = await Book.findByIdAndUpdate(id, updatedData, { new: true });
-
-    // Check if book exists
-    if (!updatedBook) {
+    // ✅ 2. Find the book by ID
+    const book = await Book.findById(id);
+    if (!book) {
       return res.status(404).json({ success: false, message: "Book not found" });
     }
 
-    // Success
+    // ✅ 3. Update only provided fields (partial update)
+    if (title !== undefined) book.title = title;
+    if (author !== undefined) book.author = author;
+    if (publicationYear !== undefined) book.publicationYear = publicationYear;
+    if (genre !== undefined) book.genre = genre;
+    if (price !== undefined) book.price = price;
+
+    // ✅ 4. Save the updated book
+    const updatedBook = await book.save();
+
+    // ✅ 5. Send success response
     return res.status(200).json({
       success: true,
       message: "Book updated successfully",
       data: updatedBook,
     });
+
   } catch (error) {
     return res.status(500).json({
       success: false,

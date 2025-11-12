@@ -34,16 +34,22 @@ export const createBookSchema = Joi.object({
 
 export const updateBookSchema = Joi.object({
   body: Joi.object({
-    title: Joi.string().min(1).max(200),
-    author: Joi.string().min(1).max(120),
-    description: Joi.string().allow("").max(2000),
-    price: Joi.number().min(0),
-    coverImage: Joi.string().uri().allow(""),
-    publishedYear: Joi.number().integer().min(0).max(new Date().getFullYear()),
-    available: Joi.boolean()
-  }).min(1), // must send at least one field
-  params: Joi.object({ id: Joi.string().length(24).hex().required() }),
-  query: Joi.object({})
+    title: Joi.string().min(3).optional(),
+    author: Joi.string().min(3).optional(),
+    publicationYear: Joi.number()
+      .integer()
+      .min(1900)
+      .max(new Date().getFullYear())
+      .optional(),
+    genre: Joi.string().optional(),
+    price: Joi.number().optional(),
+  }).required().unknown(false),
+
+  params: Joi.object({
+    id: Joi.string().hex().length(24).required(),
+  }).required(),
+
+  query: Joi.object().optional(),
 });
 
 export const getOrDeleteByIdSchema = Joi.object({
