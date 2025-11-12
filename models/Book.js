@@ -1,17 +1,27 @@
 import mongoose from "mongoose";
 
-const bookSchema = new mongoose.Schema(
-  {
-    title: { type: String, required: true, trim: true },
-    author: { type: String, required: true, trim: true },
-    description: { type: String, default: "" },
-    price: { type: Number, required: true, min: 0 },
-    coverImage: { type: String, default: "" }, // a URL or filename
-    publishedYear: { type: Number },           // optional
-    available: { type: Boolean, default: true }
+const bookSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: [true, "Title is required"],
+    minlength: [3, "Title must be at least 3 characters long"],
   },
-  { timestamps: true }
-);
+  author: {
+    type: String,
+    required: [true, "Author is required"],
+    minlength: [3, "Author name must be at least 3 characters long"],
+  },
+  publicationYear: {
+    type: Number,
+    required: [true, "Publication year is required"],
+    min: [1900, "Publication year must be later than 1900"],
+    max: [new Date().getFullYear(), "Publication year cannot be in the future"],
+  },
+  genre: {
+    type: String,
+    required: [true, "Genre is required"],
+  },
+});
 
 const Book = mongoose.model("Book", bookSchema);
 export default Book;

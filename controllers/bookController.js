@@ -5,40 +5,44 @@ import Book from "../models/Book.js";
 /** CREATE (already added on Day 2) */
 export const createBook = async (req, res) => {
   try {
-    const { title, author, description, price, coverImage, publishedYear, available } = req.body;
+    const { title, author, publicationYear, genre } = req.body;
 
-    // Required fields check
-    if (!title || !author || price === undefined) {
-      return res.status(400).json({
-        success: false,
-        message: "Fields 'title', 'author' and 'price' are required.",
-      });
-    }
-
-    // Create and save to MongoDB
-    const book = await Book.create({
+    // Create a new book document
+    const newBook = new Book({
       title,
       author,
-      description,
-      price,
-      coverImage,
-      publishedYear,
-      available,
+      publicationYear,
+      genre,
     });
+
+    // Save to database (Mongoose will auto-validate here)
+    const savedBook = await newBook.save();
 
     return res.status(201).json({
       success: true,
       message: "Book created successfully",
-      data: book,
+      data: savedBook,
     });
-  } catch (err) {
+  } catch (error) {
+    // Handle validation errors
+    if (error.name === "ValidationError") {
+      const validationErrors = Object.values(error.errors).map((err) => err.message);
+      return res.status(400).json({
+        success: false,
+        message: "Validation failed",
+        errors: validationErrors,
+      });
+    }
+
+    // Handle other errors
     return res.status(500).json({
       success: false,
-      message: "Failed to create book",
-      error: err.message,
+      message: "Server error",
+      error: error.message,
     });
   }
 };
+
 
 /** READ - list with search/sort/pagination */
 export const getBooks = async (req, res) => {
